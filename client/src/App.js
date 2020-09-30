@@ -1,25 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Fragment, useState} from 'react';
 import './App.css';
 
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+
+//Components
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
+import Register from './components/Register';
+
+
 function App() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const setAuth = (boolean)=>{
+    setIsAuthenticated(boolean);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <Fragment>
+    <Router>
+      <div className="container">
+      <Switch>
+          <Route exact path='/login' render = {props=> isAuthenticated ? (<Redirect to= "/dashboard" />): (<Login{...props} setAuth = {setAuth}/>)  }/>
+          <Route exact path='/register' render = {props => isAuthenticated ? (<Redirect to ="/login" />): ( <Register{...props} setAuth = {setAuth}/>)} />
+          <Route exact path='/dashboard' render = {props=> isAuthenticated ? <Dashboard{...props} setAuth = {setAuth}/> : <Redirect to ="/login" />}/>
+        </Switch>
+      </div>
+    </Router>
+  </Fragment>
   );
 }
 
