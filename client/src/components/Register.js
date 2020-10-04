@@ -1,6 +1,9 @@
 import React, { Fragment, useState } from 'react';
 import {Link} from 'react-router-dom';
 
+import {toast} from 'react-toastify';
+
+
 const Register = ({setAuth})=>{
 
     const [inputs, setInputs] = useState({
@@ -25,10 +28,17 @@ const Register = ({setAuth})=>{
                 body:JSON.stringify(body)
             })
         const parseResponse = await response.json();
-        localStorage.setItem("token", parseResponse.token); //setting the token to localstorage
-        setAuth(true);
 
-        } catch (err) {
+        if(parseResponse){
+            localStorage.setItem("token", parseResponse.token); //setting the token to localstorage
+            setAuth(true);
+            toast.success("Registered Successfully");
+        }
+        else{
+            setAuth(false);
+            toast.error(parseResponse); //error message comes from the server (resgiter route)
+        }
+     } catch (err) {
             console.error(err.message);
         }
     }
